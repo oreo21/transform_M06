@@ -233,10 +233,3 @@ void copy_matrix(struct matrix *a, struct matrix *b) {
     for (c=0; c < a->cols; c++)
       b->m[r][c] = a->m[r][c];
 }
-
-int main(){
-  struct matrix *m;
-  m = make_translate(2.0, 3.0, 4.0);
-  print_matrix(m);
-  return 0;
-}
