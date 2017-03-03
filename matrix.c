@@ -4,7 +4,6 @@
 
 #include "matrix.h"
 
-
 /*======== struct matrix * make_translate() ==========
 Inputs:  int x
          int y
@@ -13,12 +12,19 @@ Returns: The translation matrix created using x, y and z
 as the translation offsets.
 ====================*/
 struct matrix * make_translate(double x, double y, double z) {
+  int i, j;
   struct matrix *m;
-  m = new_matrix(1, 4);
-  (*m).m[0][0] = x;
-  (*m).m[0][1] = y;
-  (*m).m[0][2] = z;
-  (*m).m[0][3] = 1.0;
+  m = new_matrix(4, 4);
+  print_matrix(m);
+  for(i = 0; i < 4; i++){
+    for(j = 0; j < 4; j++){
+      if (i == 0 && j == 3) (*m).m[i][j] = x;
+      else if (i == 1 && j == 3) (*m).m[i][j] = y;
+      else if (i == 2 && j == 3) (*m).m[i][j] = z;
+      else if (i == j) (*m).m[i][j] = 1.0;
+      else (*m).m[i][j] = 0.0;
+    }
+  }
   return m;
 }
 
@@ -226,4 +232,11 @@ void copy_matrix(struct matrix *a, struct matrix *b) {
   for (r=0; r < a->rows; r++)
     for (c=0; c < a->cols; c++)
       b->m[r][c] = a->m[r][c];
+}
+
+int main(){
+  struct matrix *m;
+  m = make_translate(2.0, 3.0, 4.0);
+  print_matrix(m);
+  return 0;
 }
