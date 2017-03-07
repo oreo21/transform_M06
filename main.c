@@ -10,18 +10,20 @@
 
 int main(int argc, char **argv) {
 
-  screen s;
+  //screen s;
   struct matrix * edges;
   struct matrix * transform;
 
-  edges = new_matrix(4, 4);
+  edges = make_rotY(60);
   transform = new_matrix(4, 4);
+  print_matrix(edges);
 
+/*
   if ( argc == 2 )
     parse_file( argv[1], transform, edges, s );
   else
     parse_file( "stdin", transform, edges, s );
-
+*/
 
   free_matrix( edges );
   free_matrix( transform );
