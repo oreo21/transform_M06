@@ -48,10 +48,9 @@ struct matrix * make_rotX(double theta) {
   struct matrix *m;
   m = new_matrix(4, 4);
   ident(m);
-  double rads = M_PI * 180.0 / theta;
+  double rads = theta * M_PI / 180;
   (*m).m[1][1] = cos(rads), (*m).m[1][2] = -sin(rads);
   (*m).m[2][1] = sin(rads), (*m).m[2][2] = cos(rads);
-  //(*m).m[][] = ;
   return m;
 }
 
@@ -65,7 +64,7 @@ struct matrix * make_rotY(double theta) {
   struct matrix *m;
   m = new_matrix(4, 4);
   ident(m);
-  double rads = M_PI * 180.0 / theta;
+  double rads = theta * M_PI / 180;
   (*m).m[0][0] = cos(rads), (*m).m[0][2] = sin(rads);
   (*m).m[2][0] = -sin(rads), (*m).m[2][2] = cos(rads);
   return m;
@@ -81,7 +80,7 @@ struct matrix * make_rotZ(double theta) {
   struct matrix *m;
   m = new_matrix(4, 4);
   ident(m);
-  double rads = M_PI * 180.0 / theta;
+  double rads = theta * M_PI / 180;
   (*m).m[0][0] = cos(rads), (*m).m[0][1] = -sin(rads);
   (*m).m[1][0] = sin(rads), (*m).m[1][1] = cos(rads);
   return m;
@@ -98,7 +97,7 @@ void print_matrix(struct matrix *m) {
 
   int r, c;
   for (r=0; r < m->rows; r++) {
-    for (c=0; c < m->cols; c++)
+    for (c=0; c < m->lastcol; c++)
       printf("%0.2f ", m->m[r][c]);
     printf("\n");
   }

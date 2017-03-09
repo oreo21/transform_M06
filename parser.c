@@ -60,15 +60,84 @@ void parse_file ( char * filename,
   FILE *f;
   char line[256];
   clear_screen(s);
+  color c;
+  c.red = 243;
+  c.green= 156;
+  c.blue = 18;
 
-  if ( strcmp(filename, "stdin") == 0 ) 
+  if (strcmp(filename, "stdin") == 0) 
     f = stdin;
   else
     f = fopen(filename, "r");
-  
-  while ( fgets(line, 255, f) != NULL ) {
+
+  while(fgets(line, 255, f) != NULL) {
     line[strlen(line)-1]='\0';
-    printf(":%s:\n",line);
+	printf("|%s|\n",line);
+    
+    if(strcmp(line, "line") == 0){
+		fgets(line,255,f);
+		line[strlen(line)-1]='\0';
+		printf("|%s|\n",line);
+		double x0, y0, z0, x1, y1, z1;
+		sscanf(line, "%lf %lf %lf %lf %lf %lf", &x0, &y0, &z0, &x1, &y1, &z1);
+		add_edge(edges, x0, y0, z0, x1, y1, z1);
+	}
+	else if(strcmp(line, "ident") == 0){
+		ident(transform);
+	}
+	else if(strcmp(line, "scale") == 0){
+      double sx,sy,sz;
+      fgets(line,255,f);
+      line[strlen(line)-1]='\0';
+      sscanf(line,"%lf %lf %lf",&sx,&sy,&sz);
+      matrix_mult(make_scale(sx,sy,sz),transform);
+	}
+	else if(strcmp(line, "move") == 0){
+		fgets(line,255,f);
+		line[strlen(line)-1]='\0';
+		printf("|%s|\n",line);
+		double tx, ty, tz;
+		sscanf(line, "%lf %lf %lf", &tx, &ty, &tz);
+		struct matrix *translate = make_translate(tx, ty, tz);
+		matrix_mult(translate, transform); 
+	}
+	else if(strcmp(line, "rotate") == 0){
+		fgets(line,255,f);
+		line[strlen(line)-1]='\0';
+		printf("|%s|\n",line);
+		char axis;
+		double theta;
+		sscanf(line, "%c %lf", &axis, &theta);
+		struct matrix *rotate = new_matrix(4, 4);
+		if(axis == 'x') rotate = make_rotX(theta);
+		else if(axis == 'y') rotate = make_rotY(theta);
+		else if(axis == 'z') rotate = make_rotZ(theta);		
+		matrix_mult(rotate, transform); 
+	}
+	else if(strcmp(line, "apply") == 0){
+		matrix_mult(transform, edges);
+	}
+	else if(strcmp(line, "display") == 0){
+		clear_screen(s);
+		draw_lines(edges, s, c);
+		display(s);
+	}
+	else if(strcmp(line, "save") == 0){
+		clear_screen(s);
+		draw_lines(edges, s, c);
+		fgets(line,255,f);
+		line[strlen(line)-1]='\0';
+		save_extension(s, line);
+	}
+	else {
+		printf("invalid command! exiting program...\n");
+		break;
+	}
+	
+	printf("printing current edges matrix\n"), print_matrix(edges);
+	printf("printing current transform matrix\n"), print_matrix(transform);
+
   }
+  
 }
   
